@@ -1,7 +1,11 @@
 #!/usr/bin/python3
 """ Console Module """
+import re
+import os
 import cmd
 import sys
+import uuid
+from datetime import datetime
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -130,7 +134,7 @@ class HBNBCommand(cmd.Cmd):
 
         for flow in flows[1:]:
             try:
-                key, value = part.split('=')
+                key, value = flow.split('=')
 
                 if value.startswith('"') and value.endswith('"'):
                     value = value[1:-1].replace('_', ' ').replace('\\"', '"')
