@@ -119,38 +119,56 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        if not args:
+        class_pattern = r'(?P<class_name>[a-zA-Z_][a-zA-Z0-9_]*)'
+        param_pattern = r'(?P<key>[a-zA-Z_][a-zA-Z0-9_]*)=(?P<value>.+)'
+
+        class_match = re.match(class_pattern, args)
+        param_matches = re.findall(param_pattern, args)
+
+        class_name = class_match.group('class_name') if class_match else ''
+        obj_kwargs = {}
+
+        for param_match in param_matches:
+            key = param_match[0]
+            value_str = param_match[1].strip()
+
+            if value_str.startswith('"') and value_str.endswith('"'):
+                value = value_str[1:-1].replace('_', ' ')
+
+            elif '.' in value_str:
+                try:
+                    value = float(value_str)
+                except ValueError:
+                    continue
+            else:
+                try:
+                    value = int(value_str)
+                except ValueError:
+                    continue
+
+            obj_kwargs[key] = value
+
+        if not class_name:
             print("** class name missing **")
             return
-
-        flows = args.split(' ')
-        class_name = flows[0]
-
-        if class_name not in HBNBCommand.classes:
+        elif class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
 
-        params = {}
-
-        for flow in flows[1:]:
-            try:
-                key, value = flow.split('=')
-
-                if value.startswith('"') and value.endswith('"'):
-                    value = value[1:-1].replace('_', ' ').replace('\\"', '"')
-                elif '.' in value:
-                    value = float(value)
-                else:
-                    value = int(value)
-
-                params[key] = value
-            except ValueError:
-                continue
-
         new_instance = HBNBCommand.classes[class_name]()
-        storage.save()
-        print(new_instance.id)
-        storage.save()
+        if os.getenv('HBNB_TYPE_STORAGE') == 'db':
+            if not hasattr(new_instance, 'id'):
+                new_instance.id = str(uuid.uuid4())
+            if not hasattr(new_instance, 'created_at'):
+                new_instance.created_at = datetime.now()
+            if not hasattr(new_instance, 'updated_at'):
+                new_instance.updated_at = datetime.now()
+            new_instance.save()
+            print(new_instance.id)
+
+        else:
+            new_instance.save()
+            print(new_instance.id)
 
     def help_create(self):
         """ Help information for the create method """
