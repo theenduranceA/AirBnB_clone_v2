@@ -11,21 +11,25 @@ from sqlalchemy import (create_engine)
 from sqlalchemy.orm import sessionmaker, scoped_session
 import os
 
+
 user = os.getenv('HBNB_MYSQL_USER')
 pwd = os.getenv('HBNB_MYSQL_PWD')
 host = os.getenv('HBNB_MYSQL_HOST')
 db = os.getenv('HBNB_MYSQL_DB')
 env = os.getenv('HBNB_ENV')
 
+
 class DBStorage:
     """defining the class DBStorage"""
+
     __clases = [State, City, User, Place, Review, Amenity]
     __engine = None
     __session = None
 
     def __init__(self):
         """constructor for DBStorage"""
-        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(user, pwd, host, db), pool_pre_ping=True)
+        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(
+            user, pwd, host, db), pool_pre_ping=True)
     if env == "test":
         Base.Metadata.drop_all()
 
@@ -60,7 +64,8 @@ class DBStorage:
     def reload(self):
         """method to create the current database session"""
         Base.metadata.create_all(self.__engine)
-        session_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        session_factory = sessionmaker(bind=self.__engine,
+                                        expire_on_commit=False)
         Session = scoped_session(session_factory)
         DBStorage.__session = Session()
 
