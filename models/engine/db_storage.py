@@ -28,7 +28,7 @@ class DBStorage:
         self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(user, pwd, host, db), pool_pre_ping=True)
     if env == "test":
         Base.Metadata.drop_all()
-    
+
     def all(self, cls=None):
         """Method to return a dictionary of object"""
         my_dict = {}
@@ -44,11 +44,11 @@ class DBStorage:
                     key = "{}.{}".format(row.__class__.name__, row.id)
                     my_dict[key] = row
         return my_dict
-    
+
     def new(self, obj):
         """Method to add new object to the cuurrent database"""
         DBStorage.__session.add(obj)
-    
+
     def save(self):
         """methid to commit all changes to the current database"""
         DBStorage.__session.commit()
@@ -56,7 +56,7 @@ class DBStorage:
     def delete(self, obj=None):
         """Method to delete an object in the current database"""
         DBStorage.__session.delete(obj)
-    
+
     def reload(self):
         """method to create the current database session"""
         Base.metadata.create_all(self.__engine)
