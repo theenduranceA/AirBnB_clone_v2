@@ -1,8 +1,11 @@
 #!/usr/bin/python3
 """ Review module for the HBNB project """
+from os import getenv
+from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, ForeignKey
-import models
+
+storage_type = getenv("HBNB_TYPE_STORAGE")
 
 
 class Review(BaseModel, Base):
