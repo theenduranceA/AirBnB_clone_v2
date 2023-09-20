@@ -9,6 +9,7 @@ from models.user import User
 from models.review import Review
 from sqlalchemy import (create_engine)
 from sqlalchemy.orm import sessionmaker, scoped_session
+import models
 import os
 
 
@@ -22,7 +23,7 @@ env = os.getenv('HBNB_ENV')
 class DBStorage:
     """defining the class DBStorage"""
 
-    __clases = [State, City, User, Place, Review, Amenity]
+    __classes = [State, City, User, Place, Review, Amenity]
     __engine = None
     __session = None
 
@@ -30,19 +31,19 @@ class DBStorage:
         """constructor for DBStorage"""
         self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(
             user, pwd, host, db), pool_pre_ping=True)
-    if env == "test":
-        Base.Metadata.drop_all()
+        if env == "test":
+            Base.metadata.drop_all()
 
     def all(self, cls=None):
         """Method to return a dictionary of object"""
         my_dict = {}
-        if cls in self.__clases:
+        if cls in self.__classes:
             result = DBStorage.__session.query(cls)
             for row in result:
                 key = "{}.{}".format(row.__class__.name__, row.id)
                 my_dict[key] = row
         elif cls is None:
-            for cl in self.__clases:
+            for cl in self.__classes:
                 result = DBStorage.__session.query(cl)
                 for row in result:
                     key = "{}.{}".format(row.__class__.name__, row.id)
