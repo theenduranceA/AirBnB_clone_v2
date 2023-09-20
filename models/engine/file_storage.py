@@ -61,7 +61,7 @@ class FileStorage:
 
     def delete(self, obj=None):
         """
-        Deletes the current filestorage object
+        Deletes the current filestorage objects
         """
         if obj:
             key = obj.to_dict()['__class__'] + '.' + obj.id
