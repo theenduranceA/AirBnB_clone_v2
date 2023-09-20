@@ -1,10 +1,13 @@
 #!/usr/bin/python3
 """ Place Module for HBNB project """
-import os
-import models
+from os import getenv
+from models.amenity import Amenity
+from models.review import Review
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, Integer, ForeignKey, Float, Table
 from sqlalchemy.orm import relationship
+
+storage_type = getenv("HBNB_TYPE_STORAGE")
 
 if storage_type == 'db':
     place_amenity = Table('place_amenity', Base.metadata,
@@ -55,6 +58,7 @@ class Place(BaseModel, Base):
         """Getter attribute reviews that returns the list of Review instances
         with place_id equals to the current Place.id
         """
+        from models import storage
         my_list = []
         extracted_reviews = storage.all(Review)
         for review in extracted_reviews.values():
@@ -68,6 +72,7 @@ class Place(BaseModel, Base):
         the attribute amenity_ids that contains all Amenity.id linked to the
         Place.
         """
+        from models import storage
         my_list = []
         extracted_amenities = storage.all(Amenity)
         for amenity in extracted_amenities.values():
