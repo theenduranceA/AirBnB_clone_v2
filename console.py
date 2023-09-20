@@ -5,7 +5,6 @@ import os
 import cmd
 import sys
 import uuid
-from shlex import split
 from datetime import datetime
 from models.base_model import BaseModel
 from models.__init__ import storage
