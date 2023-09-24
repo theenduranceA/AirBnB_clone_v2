@@ -9,17 +9,14 @@ from sqlalchemy.orm import relationship
 
 storage_type = getenv("HBNB_TYPE_STORAGE")
 
-if storage_type == 'db':
-    place_amenity = Table('place_amenity', Base.metadata,
-                          Column('place_id', String(60),
-                                 ForeignKey('places.id'),
-                                 primary_key=True,
-                                 nullable=False),
-                          Column('amenity_id', String(60),
-                                 ForeignKey('amenities.id'),
-                                 primary_key=True,
-                                 nullable=False)
-                          )
+place_amenity = Table(
+        'place_amenity', Base.metadata,
+        Column(
+            'place_id', String(60), ForeignKey('places.id'),
+            primary_key=True, nullable=False),
+        Column(
+            'amenity_id', String(60), ForeignKey('amenities.id'),
+            primary_key=True, nullable=False))
 
 
 class Place(BaseModel, Base):
@@ -81,11 +78,7 @@ class Place(BaseModel, Base):
         return my_list
 
     @amenities.setter
-    def amenities(self, obj):
-        """Setter attribute that handles append method for adding an Amenity.id
-        to the attribute amenity_ids.
-        """
-        if obj is not None:
-            if isinstance(obj, Amenity):
-                if obj.id not in self.amenity_ids:
-                    self.amenity_ids.append(obj.id)
+    def amenities(self, amenity):
+        """Setter document"""
+        if isinstance(amenity, Amenity):
+            self.amenity_ids.append(amenity.id)

@@ -37,15 +37,18 @@ class DBStorage:
     def all(self, cls=None):
         """Method to return a dictionary of object"""
         my_dict = {}
-        self.__classes = [Amenity, City, User, Place, State, Review]
-        if cls is None:
-            for _class in self.__classes.values():
-                if self.__session.query(_class).all():
-                    for item in self.__session.query(_class).all():
-                        my_dict[item.id] = item
+        _classes = [Amenity, City, User, Place, State, Review]
+        if cls is not None:
+            for obj in self.__session.query(cls).all():
+                ClassName = obj.__class__.__name__
+                keyName = ClassName + "." + obj.id
+                my_dict[keyName] = obj
         else:
-            for item in self.__session.query(self.__classes[cls]):
-                my_dict[item.id] = item
+            for att in _classes:
+                for obj in self.__session.query(att).all():
+                    ClassName = obj.__class__.__name__
+                    keyName = ClassName + "." + obj.id
+                    my_dict[keyName] = obj
         return (my_dict)
 
     def new(self, obj):
@@ -69,7 +72,3 @@ class DBStorage:
                                        expire_on_commit=False)
         Session = scoped_session(session_factory)
         self.__session = Session()
-
-    def close(self):
-        """Public Method to call remove method"""
-        self.__session.close()
