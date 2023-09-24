@@ -30,6 +30,21 @@ class HBNBCommand(cmd.Cmd):
              'max_guest': int, 'price_by_night': int,
              'latitude': float, 'longitude': float
             }
+    the_attributes = {
+            "BaseModel": ["id", "created_at", "updated_at"],
+            "User": [
+                "id", "created_at", "updated_at", "email",
+                "password", "first_name", "last_name"],
+            "Place": [
+                "id", "created_at", "updated_at", "city_id", "user_id",
+                "name", "description", "number_rooms", "number_bathrooms",
+                "max_guest", "price_by_night", "latitude",
+                "longitude", "amenity_ids"],
+            "Amenity": ["id", "created_at", "updated_at", "name"],
+            "Review": [
+                "id", "created_at", "updated_at",
+                "place_id", "user_id", "text"],
+            }
 
     def preloop(self):
         """Prints if isatty is false"""
@@ -151,7 +166,7 @@ class HBNBCommand(cmd.Cmd):
             pip = flows[flow].split("=")
             if len(pip) == 2:
                 key = pip[0]
-                if key not in HBNBCommand.valid_keys[class_name]:
+                if key not in HBNBCommand.the_attributes[class_name]:
                     continue
                 value = self.my_reader(pip[1])
                 if value is not None:
