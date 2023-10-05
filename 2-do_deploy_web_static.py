@@ -1,51 +1,36 @@
 #!/usr/bin/python3
-"""
-Script that that distributes an archive to my web servers,
-using the function do_deploy.
-"""
-import os.path
+"""2-do_deploy_web_static module"""
+from os.path import isfile
 from fabric.api import *
-from fabric.operations import run, put, sudo
-env.user = "ubuntu"
-env.hosts = [
-        '35.174.205.224',
-        '54.172.243.100']
+
+env.hosts = ["35.174.205.224", "54.172.243.100"]
 
 
 def do_deploy(archive_path):
-    """ Module for deploy """
-
-    if (os.path.isfile(archive_path) is False):
+    """Distributes an archive to your web servers
+    archive_path: Path to archive
+    Returns: True if all operations done sucessful, otherwise False
+    """
+    if isfile(archive_path) is False:
         return False
 
+    file_ne = archive_path.split('/')[1].split('.')[0]
+    file_np = archive_path.split('/')[1]
+
     try:
-        test1 = archive_path.split("/")[-1]
-        test2 = (
-                "/data/web_static/releases/" + test1.split(".")[0]
-                )
-
         put(archive_path, "/tmp/")
-        run(
-                "sudo mkdir -p /data/web_static/releases/\
-                        web_static_{}/".format(test2))
-        run(
-                "sudo tar -xzf /tmp/web_static_{}.tgz -C /data/web_static/\
-                        releases/web_static_{}/".format(test1, test2))
-        run(
-                "sudo rm /tmp/web_static_{}.tgz".format(test1))
-        run(
-                "sudo mv /data/web_static/releases/web_static_{}/\
-                        web_static/* /data/web_static/releases/\
-                        web_static_{}/".format(test2, test2))
-        run(
-                "sudo rm -rf /data/web_static/releases/\
-                        web_static_{}/web_static".format(test2))
-        run(
-                "sudo rm -rf /data/web_static/current")
-        run(
-                "sudo ln -s /data/web_static/releases/web_static_{}/ \
-                        /data/web_static/current".format(test2))
+        run("mkdir -p /data/web_static/releases/{}/".format(file_ne))
+        run("tar -xzf /tmp/{} -C /data/web_static/releases/{}/".
+            format(file_np, file_ne))
+        run("rm /tmp/{}".format(file_np))
+        run("mv /data/web_static/releases/{}/web_static/* \
+/data/web_static/releases/{}/".format(file_ne, file_ne))
+        run("rm -rf /data/web_static/releases/{}/web_static".
+            format(file_ne))
+        run("rm -rf /data/web_static/current")
+        run("ln -s /data/web_static/releases/{}/ \
+/data/web_static/current".format(file_ne))
+        print("New version deployed!")
         return True
-
     except Exception:
         return False
