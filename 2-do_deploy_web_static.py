@@ -6,6 +6,7 @@ using the function do_deploy.
 import os.path
 from fabric.api import *
 from fabric.operations import run, put, sudo
+env.user = "ubuntu"
 env.hosts = [
         '35.174.205.224',
         '54.172.243.100']
@@ -25,19 +26,25 @@ def do_deploy(archive_path):
 
         put(archive_path, "/tmp/")
         run(
-                "sudo mkdir -p {}".format(test2))
+                "sudo mkdir -p /data/web_static/releases/\
+                        web_static_{}/".format(test2))
         run(
-                "sudo tar -xzf /tmp/{} -C {}".format(test1, test2))
+                "sudo tar -xzf /tmp/web_static_{}.tgz -C /data/web_static/\
+                        releases/web_static_{}/".format(test1, test2))
         run(
-                "sudo rm /tmp/{}".format(test1))
+                "sudo rm /tmp/web_static_{}.tgz".format(test1))
         run(
-                "sudo mv {}/web_static/* {}/".format(test2, test2))
+                "sudo mv /data/web_static/releases/web_static_{}/\
+                        web_static/* /data/web_static/releases/\
+                        web_static_{}/".format(test2, test2))
         run(
-                "sudo rm -rf {}/web_static".format(test2))
+                "sudo rm -rf /data/web_static/releases/\
+                        web_static_{}/web_static".format(test2))
         run(
-                'sudo rm -rf /data/web_static/current')
+                "sudo rm -rf /data/web_static/current")
         run(
-                "sudo ln -s {} /data/web_static/current".format(test2))
+                "sudo ln -s /data/web_static/releases/web_static_{}/ \
+                        /data/web_static/current".format(test2))
         return True
 
     except Exception:
