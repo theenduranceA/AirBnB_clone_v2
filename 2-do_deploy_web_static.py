@@ -22,7 +22,7 @@ def do_deploy(archive_path):
     try:
         put(archive_path, "/tmp/")
         run(
-                "sudo kdir -p /data/web_static/releases/{}/".format(test1))
+                "sudo mkdir -p /data/web_static/releases/{}/".format(test1))
         run(
                 "sudo tar -xzf /tmp/{} -C /data/web_static/\
                         releases/{}/".format(test2, test1))
