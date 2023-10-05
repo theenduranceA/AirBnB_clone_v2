@@ -5,6 +5,7 @@ using the function do_deploy.
 """
 import os.path
 from fabric.api import *
+from fabric.operations import run, put, sudo
 env.hosts = [
         '35.174.205.224',
         '54.172.243.100']
