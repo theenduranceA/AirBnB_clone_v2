@@ -70,3 +70,7 @@ class FileStorage:
             if keyName in FileStorage.__objects:
                 del (FileStorage.__objects[keyName])
                 self.save()
+
+    def close(self):
+        """Calls reload"""
+        self.reload()
