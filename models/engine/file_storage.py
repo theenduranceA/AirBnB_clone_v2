@@ -41,13 +41,13 @@ class FileStorage:
         temp = {}
         for key, value in self.__objects.items():
             temp[key] = value.to_dict()
-        with open(self.__file_path, 'w', encoding="UTF-8") as f:
+        with open(self.__file_path, 'w') as f:
             json.dump(temp, f)
 
     def reload(self):
         """Loads storage dictionary from file"""
         try:
-            with open(self.__file_path, 'r', encoding="UTF-8") as f:
+            with open(self.__file_path, 'r') as f:
                 for key, value in (json.load(f)).items():
                     value = eval(value["__class__"])(**value)
                     self.__objects[key] = value
