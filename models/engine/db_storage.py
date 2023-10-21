@@ -10,6 +10,14 @@ from models.review import Review
 from sqlalchemy import (create_engine)
 from sqlalchemy.orm import sessionmaker, scoped_session
 from os import getenv
+my_classes = {
+    'Amenity': Amenity,
+    'City': City,
+    'User': User,
+    'Place': Place,
+    "State": State,
+    'Review': Review,
+}
 
 
 class DBStorage:
@@ -24,27 +32,24 @@ class DBStorage:
         pwd = getenv("HBNB_MYSQL_PWD")
         host = getenv("HBNB_MYSQL_HOST")
         db = getenv("HBNB_MYSQL_DB")
-        env = getenv("HBNB_ENV")
 
-        self.__engine = create_engine(
-            f"mysql+mysqldb://{user}:{pwd}@{host}/{db}",
-            pool_pre_ping=True,
-        )
+        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'
+                                      .format(user, pwd, host, db),
+                                      pool_pre_ping=True)
 
-        if env == "test":
+        if getenv('HBNB_MYSQL_ENV') == "test":
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         """Method to return a dictionary of object"""
         my_dict = {}
-        _classes = [Amenity, City, User, Place, State, Review]
         if cls is not None:
             for obj in self.__session.query(cls).all():
                 ClassName = obj.__class__.__name__
                 keyName = ClassName + "." + obj.id
                 my_dict[keyName] = obj
         else:
-            for att in _classes:
+            for att in my_classes:
                 for obj in self.__session.query(att).all():
                     ClassName = obj.__class__.__name__
                     keyName = ClassName + "." + obj.id
@@ -75,4 +80,4 @@ class DBStorage:
 
     def close(self):
         """Calls close"""
-        self.__session.close()
+        self.__session.remove()
