@@ -10,7 +10,7 @@ from models.review import Review
 from sqlalchemy import (create_engine)
 from sqlalchemy.orm import sessionmaker, scoped_session
 from os import getenv
-my_classes = {
+self.__my_classes = {
     'Amenity': Amenity,
     'City': City,
     'User': User,
@@ -43,17 +43,14 @@ class DBStorage:
     def all(self, cls=None):
         """Method to return a dictionary of object"""
         my_dict = {}
-        if cls is not None:
-            for obj in self.__session.query(cls).all():
-                ClassName = obj.__class__.__name__
-                keyName = ClassName + "." + obj.id
-                my_dict[keyName] = obj
+        if cls is None:
+            for my_cls in self.__my_classes.values():
+                if self.__session.query(my_cls).all():
+                    for item in self.__session.query(my_cls).all():
+                        my_dict[item.id] = item
         else:
-            for att in my_classes:
-                for obj in self.__session.query(att).all():
-                    ClassName = obj.__class__.__name__
-                    keyName = ClassName + "." + obj.id
-                    my_dict[keyName] = obj
+            for item in self.__session.query(self.__my_classes[cls]):
+                my_dict[item.id] = item
         return (my_dict)
 
     def new(self, obj):
@@ -80,4 +77,4 @@ class DBStorage:
 
     def close(self):
         """Calls close"""
-        self.__session.remove()
+        self.__session.close()
