@@ -31,7 +31,6 @@ class FileStorage:
             clc = cls.__name__
             for key, value in FileStorage.__objects.items():
                 if key.split('.')[0] == clc:
-                if type(value) == cls:
                     my_dict[key] = value
             return my_dict
         else:
