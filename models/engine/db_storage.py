@@ -1,16 +1,16 @@
 #!/usr/bin/python3
 """This module defines the engine for the MySQL database"""
-from models.base_model import BaseModel, Base
+from models.base_model import Base
 from models.state import State
 from models.amenity import Amenity
 from models.city import City
 from models.place import Place
 from models.user import User
 from models.review import Review
-from sqlalchemy import (create_engine)
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from os import getenv
-self.__my_classes = {
+my_classes = {
     'Amenity': Amenity,
     'City': City,
     'User': User,
@@ -44,12 +44,12 @@ class DBStorage:
         """Method to return a dictionary of object"""
         my_dict = {}
         if cls is None:
-            for my_cls in self.__my_classes.values():
+            for my_cls in my_classes.values():
                 if self.__session.query(my_cls).all():
                     for item in self.__session.query(my_cls).all():
                         my_dict[item.id] = item
         else:
-            for item in self.__session.query(self.__my_classes[cls]):
+            for item in self.__session.query(my_classes[cls]):
                 my_dict[item.id] = item
         return (my_dict)
 
