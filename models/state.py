@@ -7,8 +7,6 @@ from models.city import City
 from os import getenv
 import models
 
-storage_type = getenv("HBNB_TYPE_STORAGE")
-
 
 class State(BaseModel, Base):
     """ State class """
